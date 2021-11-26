@@ -1,0 +1,12 @@
+@namespace("com.example.kafkademo")
+protocol DemoProtocol {
+	record CustomerUpsertedEvent {
+		Customer customer;
+	}
+
+	record Customer {
+		string id;
+		string name;
+		union{null, string} surname = null;
+	}
+}
