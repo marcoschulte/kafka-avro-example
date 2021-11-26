@@ -1,1 +1,6 @@
-
+spring:
+  kafka:
+    consumer:
+      group-id: demo-producer-group
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
