@@ -1,0 +1,7 @@
+@namespace("com.example.avrosourcegenmaven")
+protocol DemoProtocol {
+
+	record SomeObject {
+		string id;
+	}
+}
