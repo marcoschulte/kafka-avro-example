@@ -4,6 +4,10 @@ protocol DemoProtocol {
 		Customer customer;
 	}
 
+	record AnotherCustomerEvent {
+		Customer customer;
+	}
+
 	record Customer {
 		string id;
 		string name;

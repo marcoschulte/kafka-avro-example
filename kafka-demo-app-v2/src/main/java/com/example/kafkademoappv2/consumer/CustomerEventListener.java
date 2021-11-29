@@ -20,10 +20,19 @@ public class CustomerEventListener {
   @KafkaHandler
   public void upsert(CustomerUpsertedEvent event) {
     LOG.info("Received customer upsert: {}", event);
+
+    if ("error".equals(event.getCustomer().getName())) {
+      throw new RuntimeException("Invalid customer name");
+    }
   }
 
   @KafkaHandler
   public void delete(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String customerId, @Payload(required = false) KafkaNull tombstone) {
     LOG.info("Received customer delete: {}", customerId);
+  }
+
+  @KafkaHandler(isDefault = true)
+  public void defaultValue() {
+    LOG.info("Received event we are not interested in");
   }
 }

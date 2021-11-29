@@ -1,5 +1,6 @@
 package com.example.kafkademoappv2.producer;
 
+import com.example.kafkademo.AnotherCustomerEvent;
 import com.example.kafkademo.Customer;
 import com.example.kafkademo.CustomerUpsertedEvent;
 import com.example.kafkademoappv2.AppProperties;
@@ -12,8 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 
 @Component
+@RestController
 public class CustomerEventProducer {
 
   private static final Logger LOG = LoggerFactory.getLogger(CustomerEventProducer.class);
@@ -39,10 +42,14 @@ public class CustomerEventProducer {
 
 
   @Scheduled(fixedRate = 5000)
-  public void sendDelete() throws ExecutionException, InterruptedException {
+  public void sendAnotherEvent() throws ExecutionException, InterruptedException {
     String key = UUID.randomUUID().toString();
 
-    LOG.info("Sending customer delete {}={}", key, null);
-    template.send(properties.getTopicName(), key, null).get();
+    Customer customer = new Customer(key, "CustomerName V2 " + DF.format(new Date()), "surname");
+    AnotherCustomerEvent value = new AnotherCustomerEvent(customer);
+
+    LOG.info("Sending another customer event {}={}", key, value);
+    template.send(properties.getTopicName(), key, value).get();
   }
+
 }

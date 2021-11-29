@@ -9,10 +9,18 @@ spring:
     consumer:
       group-id: demo-producer-group-v2
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
         specific.avro.reader: true
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.DelegatingByTopicDeserializer
+        spring.kafka.value.serialization.bytopic.config: ".+\\.DLT$:org.apache.kafka.common.serialization.ByteArrayDeserializer"
+        spring.kafka.value.serialization.bytopic.default: io.confluent.kafka.serializers.KafkaAvroDeserializer
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-
+      value-serializer: org.springframework.kafka.support.serializer.DelegatingByTopicSerializer
+      properties:
+        spring.kafka.value.serialization.bytopic.config: ".+\\.DLT$:org.springframework.kafka.support.serializer.ToStringSerializer"
+        spring.kafka.value.serialization.bytopic.default: io.confluent.kafka.serializers.KafkaAvroSerializer
+logging:
+  level:
+    org.springframework.kafka.listener.DeadLetterPublishingRecoverer: debug
