@@ -25,6 +25,8 @@ Session 2
     curl http://localhost:8085/subjects/some-topic-value/versions
     curl http://localhost:8085/subjects/some-topic-value/versions/1
 
+Compatibility modes: https://docs.confluent.io/platform/current/schema-registry/avro.html#schema-evolution-and-compatibility
+
     # compatibility
     curl http://localhost:8085/config/
     curl http://localhost:8085/config/some-topic-value
