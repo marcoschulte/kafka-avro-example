@@ -6,6 +6,7 @@ import com.example.kafkademoappv1.AppProperties;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -26,22 +27,22 @@ public class CustomerEventProducer {
   }
 
   @Scheduled(fixedRate = 5000)
-  public void sendUpsert() {
+  public void sendUpsert() throws ExecutionException, InterruptedException {
     String key = UUID.randomUUID().toString();
 
     Customer customer = new Customer(key, "CustomerName V1 " + DF.format(new Date()));
     CustomerUpsertedEvent value = new CustomerUpsertedEvent(customer);
 
     LOG.info("Sending customer upsert {}={}", key, value);
-    template.send(properties.getTopicName(), key, value);
+    template.send(properties.getTopicName(), key, value).get();
   }
 
 
   @Scheduled(fixedRate = 5000)
-  public void sendDelete() {
+  public void sendDelete() throws ExecutionException, InterruptedException {
     String key = UUID.randomUUID().toString();
 
     LOG.info("Sending customer delete {}={}", key, null);
-    template.send(properties.getTopicName(), key, null);
+    template.send(properties.getTopicName(), key, null).get();
   }
 }
